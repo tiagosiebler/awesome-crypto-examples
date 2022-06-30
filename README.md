@@ -9,6 +9,15 @@ What kind of examples?
 
 Note: these are not meant to suggest best practices. These are purely demonstrations for one (or more) way(s) for doing various things.
 
+## Related projects
+Check out my related projects:
+- Try my connectors:
+  - [ftx-api](https://www.npmjs.com/package/ftx-api)
+  - [bybit-api](https://www.npmjs.com/package/bybit-api)
+  - [binance](https://www.npmjs.com/package/binance)
+- Try my misc utilities:
+  - [orderbooks](https://www.npmjs.com/package/orderbooks)
+
 ## Getting started
 All examples are in node.js and/or typescript.
 - Ensure you have node.js installed (see `.nvmrc` for the recommended version (or above))
