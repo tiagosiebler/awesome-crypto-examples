@@ -3,8 +3,8 @@
 Wondering how to "[insert something crypto & nodejs related]"? Welcome to a loose collection of node.js examples and demos in the world of algo trading (especially cryptocurrencies).
 
 What kind of examples?
-- Working with REST APIs
-- Working with WebSockets
+- Working with crypto exchange REST APIs
+- Working with crypto exchange WebSocket streams
 - Anything else crypto + node.js?
 
 Note: these are not meant to suggest best practices. These are purely demonstrations for one (or more) way(s) for doing various things.
