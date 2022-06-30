@@ -37,7 +37,7 @@ Typescript examples will be any file that ends with `.ts`. If the example has a 
 npx ts-node src/path/to/example.ts
 ```
 
-Refer to the following documentation for guidance on ts-node: https://www.npmjs.com/package/ts-node#installation
+Refer to the following documentation for guidance on ts-node: https://www.npmjs.com/package/ts-node#overview
 
 ### Providing API keys
 Some examples make private API calls (e.g. the [account monitoring](https://github.com/tiagosiebler/awesome-crypto-examples/blob/master/src/exchanges/binance/account-events/log-account-events.ts#L9-L10) ones). These rely on API credentials to make signed API calls to your account.
