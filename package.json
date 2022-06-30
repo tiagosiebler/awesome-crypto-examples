@@ -7,6 +7,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "dependencies": {
+    "binance": "^2.0.30",
+    "bybit-api": "^2.2.1",
+    "ftx-api": "^1.1.12"
+  },
   "devDependencies": {
     "@babel/core": "^7.14.5",
     "@babel/preset-env": "^7.14.5",
@@ -30,10 +35,5 @@
   "bugs": {
     "url": "https://github.com/tiagosiebler/awesome-crypto-examples/issues"
   },
-  "homepage": "https://github.com/tiagosiebler/awesome-crypto-examples#readme",
-  "dependencies": {
-    "binance": "^2.0.30",
-    "bybit-api": "^2.2.1",
-    "ftx-api": "^1.1.12"
-  }
+  "homepage": "https://github.com/tiagosiebler/awesome-crypto-examples#readme"
 }
