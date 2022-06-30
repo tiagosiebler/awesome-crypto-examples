@@ -18,8 +18,8 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.4.1",
-    "ts-node": "^10.2.1",
-    "typescript": "^4.4.3"
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.4"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,8 @@
   },
   "homepage": "https://github.com/tiagosiebler/awesome-crypto-examples#readme",
   "dependencies": {
-    "binance": "^2.0.30"
+    "binance": "^2.0.30",
+    "bybit-api": "^2.2.1",
+    "ftx-api": "^1.1.12"
   }
 }

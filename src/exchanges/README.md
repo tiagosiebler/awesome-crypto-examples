@@ -1,3 +1,3 @@
-# Exchange Examples
+# Exchange-specific examples
 
-These are examples that may be niche to how specific exchanges work.
+These are examples interacting with specific exchanges only. E.g. how to place orders on binance.
