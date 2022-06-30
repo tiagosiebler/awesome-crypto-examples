@@ -1,6 +1,6 @@
 # awesome-crypto-examples
 
-Wondering how to "[insert something crypto & nodejs related]"? Welcome to a loose collection of node.js examples and demos.
+Wondering how to "[insert something crypto & nodejs related]"? Welcome to a loose collection of node.js examples and demos in the world of algo trading (especially cryptocurrencies).
 
 What kind of examples?
 - Working with REST APIs
