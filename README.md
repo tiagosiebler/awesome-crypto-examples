@@ -17,6 +17,8 @@ Check out my related projects:
   - [binance](https://www.npmjs.com/package/binance)
 - Try my misc utilities:
   - [orderbooks](https://www.npmjs.com/package/orderbooks)
+- Check out my examples:
+  - [awesome-crypto-examples](https://github.com/tiagosiebler/awesome-crypto-examples)
 
 ## Getting started
 All examples are in node.js and/or typescript.
