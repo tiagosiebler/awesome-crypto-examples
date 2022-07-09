@@ -25,6 +25,10 @@ All examples are in node.js and/or typescript.
 - Ensure you have node.js installed (see `.nvmrc` for the recommended version (or above))
 - Install dependencies: `npm install`
 
+### Frequenty Asked Questions
+Check out the wiki. Contributions welcome:
+https://github.com/tiagosiebler/awesome-crypto-examples/wiki
+
 ### Running examples (node.js)
 
 Node.js examples will be any file that ends with `.js`. If the example has a readme, refer to the readme for specific instructions, otherwise use the following command to run the example with node.js:
