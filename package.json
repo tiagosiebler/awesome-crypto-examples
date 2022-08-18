@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "binance": "^2.0.34",
+    "binance": "^2.0.35",
     "bybit-api": "^2.2.1",
     "ftx-api": "^1.1.12",
     "orderbooks": "^1.1.1"
