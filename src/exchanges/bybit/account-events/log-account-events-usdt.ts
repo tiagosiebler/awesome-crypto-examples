@@ -1,5 +1,14 @@
 import { WebsocketClient } from 'bybit-api';
 
+/**
+Either use environmental variables to try this, e.g. unix/mac:
+export APIKEY="APIKEYHERE";
+export APISECRET="APISECRETHERE";
+
+or hardcode it:
+const key = "APIKEYHERE";
+const secret = "APISECRETHERE";
+**/
 const key = process.env.APIKEY || 'APIKEY';
 const secret = process.env.APISECRET || 'APISECRET';
 
