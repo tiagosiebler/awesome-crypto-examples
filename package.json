@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "binance": "^2.0.35",
-    "bybit-api": "^2.3.1",
+    "bybit-api": "^3.0.1",
     "ftx-api": "^1.1.12",
     "orderbooks": "^1.1.1"
   },

@@ -6,9 +6,19 @@ import {
   WebsocketClient,
 } from 'bybit-api';
 
-const apiKey = process.env.API_KEY_COM || 'yourAPIKey';
-const apiSecret = process.env.API_SECRET_COM || 'yourAPISecret';
-const useLivenet = true;
+/**
+Either use environmental variables to try this, e.g. unix/mac:
+APIKEY="APIKEYHERE" APISECRET="APISECRETHERE" ts-node src/exchanges/bybit/account-events/log-account-events-usdt.ts
+
+or hardcode it:
+const key = "APIKEYHERE";
+const secret = "APISECRETHERE";
+
+the below code reads it from env vars first. If none are provided, it defaults to the hardcoded strings:
+**/
+const apiKey = process.env.API_KEY_COM || 'yourAPIKeyHere';
+const apiSecret = process.env.API_SECRET_COM || 'yourAPISecretHere';
+const testnet = false;
 
 /**
  * This sample is a simple demonstration of opening and closing OneWay positions on USDT (linear) perps on bybit.
@@ -30,7 +40,7 @@ function connectAndListenToAccountWebsocketEvents(
     key: key,
     secret: secret,
     market: apiMarket,
-    livenet: useLivenet,
+    testnet: testnet,
   });
 
   wsClient.on('update', (data) => {
@@ -55,7 +65,11 @@ function connectAndListenToAccountWebsocketEvents(
 }
 
 async function submitUsdtPerpOrders(apiKey: string, apiSecret: string) {
-  const restClient = new LinearClient(apiKey, apiSecret, useLivenet);
+  const restClient = new LinearClient({
+    key: apiKey,
+    secret: apiSecret,
+    testnet: testnet,
+  });
 
   const TARGET_LEVERAGE = 5;
   const TARGET_SYMBOL = 'BTCUSDT';

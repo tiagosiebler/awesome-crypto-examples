@@ -2,31 +2,27 @@ import { WebsocketClient } from 'bybit-api';
 
 /**
 Either use environmental variables to try this, e.g. unix/mac:
-export APIKEY="APIKEYHERE";
-export APISECRET="APISECRETHERE";
+APIKEY="APIKEYHERE" APISECRET="APISECRETHERE" ts-node src/exchanges/bybit/account-events/log-account-events-usdt.ts
 
 or hardcode it:
 const key = "APIKEYHERE";
 const secret = "APISECRETHERE";
+
+the below code reads it from env vars first. If none are provided, it defaults to the hardcoded strings:
 **/
-const key = process.env.APIKEY || 'APIKEY';
-const secret = process.env.APISECRET || 'APISECRET';
+const key = process.env.APIKEY || 'YOURAPIKEYHERE';
+const secret = process.env.APISECRET || 'YOURAPISECRETHERE';
 
-// USDT Perps:
-const market = 'linear';
-// Inverse Perp
-// const market = 'inverse';
-// const market = 'spot';
-
-// Note: the WebsocketClient defaults to testnet. Set `livenet: true` to use live markets.
 const wsClient = new WebsocketClient({
   key: key,
   secret: secret,
-  market: market,
-  livenet: true,
-  restOptions: {
-    // disable_time_sync: true,
-  },
+  // USDT Perps
+  market: 'linear',
+  // Inverse Perps
+  // market: 'inverse',
+  // Spot
+  // market: 'spotv3',
+  testnet: false,
 });
 
 wsClient.on('update', (data) => {

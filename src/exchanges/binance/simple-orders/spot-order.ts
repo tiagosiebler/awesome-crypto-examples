@@ -51,7 +51,7 @@ function trimToDecimalPlaces(number: number, precision: number): number {
       return console.error('Error: funds to trade from USDT');
     }
 
-    const buyAmountValue = Number(usdtAvailable) * (50 / 100);
+    const buyAmountValue = Number(usdtAvailable) * (entryAmountPercent / 100);
     console.log(
       `Executing trade with ${entryAmountPercent}% of ${usdtAvailable} USDT = ${buyAmountValue} USDT value`,
     );
