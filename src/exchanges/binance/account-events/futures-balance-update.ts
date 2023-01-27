@@ -94,9 +94,7 @@ function onUserDataEvent(data: WsUserDataEvents) {
 }
 
 /** Log balance updates when account changes happen */
-async function onAccountUpdate(
-  data: WsMessageFuturesUserDataAccountUpdateFormatted,
-) {
+function onAccountUpdate(data: WsMessageFuturesUserDataAccountUpdateFormatted) {
   // Extract the USDT balance, from an array of balances
   const baseBalanceSymbol = 'USDT';
   const updatedBalance = data.updateData.updatedBalances.find(
