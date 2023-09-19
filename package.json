@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "binance": "^2.2.11",
+    "bitget-api": "^1.1.3",
     "bybit-api": "^3.3.10",
     "ftx-api": "^1.1.14",
     "okx-api": "^1.0.3",
