@@ -4,12 +4,16 @@ function logResultLatency(orderBeforeDt: Date, result: unknown, desc: string) {
   const orderAfterDt = new Date();
   console.log(
     `Latency for (${desc}): `,
-    JSON.stringify({
-      orderBeforeDt,
-      orderAfterDt,
-      orderRoundtripMs: orderAfterDt.getTime() - orderBeforeDt.getTime(),
-      result,
-    }),
+    JSON.stringify(
+      {
+        orderBeforeDt,
+        orderAfterDt,
+        orderRoundtripMs: orderAfterDt.getTime() - orderBeforeDt.getTime(),
+        result,
+      },
+      null,
+      2,
+    ),
   );
 }
 
