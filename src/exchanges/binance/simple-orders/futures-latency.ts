@@ -66,12 +66,13 @@ function logResultLatency(orderBeforeDt: Date, result: unknown, desc: string) {
     });
     logResultLatency(orderFullBeforeDt, orderFull, 'order FULL');
 
-    console.log(`Closing positions...`);
+    console.log(`Fetching positions...`);
     const positions = await binanceRest.getPositions();
     const activePositions = positions.filter(
       (pos) => Number(pos.positionAmt) !== 0,
     );
 
+    console.log(`Closing positions...`);
     for (const pos of activePositions) {
       try {
         const qty = Number(pos.positionAmt);
@@ -83,6 +84,8 @@ function logResultLatency(orderBeforeDt: Date, result: unknown, desc: string) {
           symbol: pos.symbol,
           type: 'MARKET',
         };
+
+        console.log(`Submitting close order: `, JSON.stringify(order, null, 2));
 
         const res = await binanceRest.submitNewOrder(order);
         console.log(`Executed close for ${pos.symbol}. Result: `, res);
