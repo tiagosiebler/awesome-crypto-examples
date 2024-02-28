@@ -16,7 +16,6 @@
     "sourceMap": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "watch": false,
     "lib": ["es2020", "DOM"],
     "baseUrl": "src"
   },
