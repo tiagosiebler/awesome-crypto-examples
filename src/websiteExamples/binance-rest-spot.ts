@@ -14,11 +14,6 @@ async function publicCalls() {
     });
     console.log('one ticker: ', oneTicker);
 
-    const manyTickers = await spotClient.get24hrChangeStatististics({
-      symbols: ['BTCUSDT', 'ETHUSDT'],
-    });
-    console.log('multiple tickers ', manyTickers);
-
     const allTickers = await spotClient.get24hrChangeStatististics();
     console.log('all tickers: ', allTickers);
   } catch (error) {
