@@ -2,25 +2,25 @@
 import { CoinMClient, USDMClient } from 'binance';
 
 // initialise the USDT margined futures client
-const USDMFuturesClient = new USDMClient({
+const usdmFuturesClient = new USDMClient({
   api_key: 'insert api key here',
   api_secret: 'insert api secret here',
 });
 
 // initialise the COIN margined futures client
-const COINMFuturesClient = new CoinMClient({
+const coinMFuturesClient = new CoinMClient({
   api_key: 'insert api key here',
   api_secret: 'insert api secret here',
 });
 
 async function publicCalls() {
   try {
-    const orderBook = await USDMFuturesClient.getOrderBook({
+    const orderBook = await usdmFuturesClient.getOrderBook({
       symbol: 'BTCUSDT',
     });
     console.log('Orderbook: ', orderBook);
 
-    const klineData = await USDMFuturesClient.getKlines({
+    const klineData = await usdmFuturesClient.getKlines({
       symbol: 'BTCUSDT',
       interval: '1m',
     });
@@ -32,7 +32,7 @@ async function publicCalls() {
 
 async function privateCalls() {
   try {
-    const orderInfo = await USDMFuturesClient.submitNewOrder({
+    const orderInfo = await usdmFuturesClient.submitNewOrder({
       symbol: 'BTCUSDT',
       side: 'BUY',
       quantity: 0.001,
@@ -40,7 +40,7 @@ async function privateCalls() {
     });
     console.log('Order info: ', orderInfo);
 
-    const balance = await USDMFuturesClient.getBalance();
+    const balance = await usdmFuturesClient.getBalance();
     console.log('Balance: ', balance);
   } catch (error) {
     console.error('private request failed: ', error);
