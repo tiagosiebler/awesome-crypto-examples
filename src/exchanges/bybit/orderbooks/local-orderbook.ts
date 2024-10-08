@@ -7,7 +7,7 @@ const OrderBooks = new OrderBooksStore({
 });
 
 // connect to a websocket and relay orderbook events to handlers
-const ws = new WebsocketClient({ testnet: false, market: 'inverse' });
+const ws = new WebsocketClient({ testnet: false, market: 'v5' });
 
 ws.on('update', (message) => {
   if (message.topic.toLowerCase().startsWith('orderbook')) {

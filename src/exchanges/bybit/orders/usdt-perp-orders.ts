@@ -3,6 +3,7 @@ import {
   APIMarket,
   LinearClient,
   LinearPositionIdx,
+  RestClientV5,
   WebsocketClient,
 } from 'bybit-api';
 
@@ -25,7 +26,7 @@ const testnet = false;
  */
 
 // Purely for logging, connect to account websocket events to monitor activity
-connectAndListenToAccountWebsocketEvents(apiKey, apiSecret, 'linear');
+connectAndListenToAccountWebsocketEvents(apiKey, apiSecret, 'v5');
 
 // Start REST API calls for submitting orders
 submitUsdtPerpOrders(apiKey, apiSecret);
@@ -61,11 +62,11 @@ function connectAndListenToAccountWebsocketEvents(
   });
 
   // subscribe to private endpoints
-  wsClient.subscribe(['position', 'execution', 'order', 'wallet']);
+  wsClient.subscribeV5(['position', 'execution', 'order', 'wallet'], 'linear');
 }
 
 async function submitUsdtPerpOrders(apiKey: string, apiSecret: string) {
-  const restClient = new LinearClient({
+  const restClient = new RestClientV5({
     key: apiKey,
     secret: apiSecret,
     testnet: testnet,
@@ -75,8 +76,14 @@ async function submitUsdtPerpOrders(apiKey: string, apiSecret: string) {
   const TARGET_SYMBOL = 'BTCUSDT';
   const BTC_AMOUNT_TO_TRADE = 0.001;
 
-  const walletBalanceResponse = await restClient.getWalletBalance();
-  const usdtBalance = walletBalanceResponse.result.USDT?.available_balance;
+  const walletBalanceResponse = await restClient.getWalletBalance({
+    accountType: 'CONTRACT',
+  });
+  const USDTBalanceObject = walletBalanceResponse.result.list[0].coin.find(
+    (coinBalance) => coinBalance.coin === 'USDT',
+  );
+
+  const usdtBalance = USDTBalanceObject.walletBalance;
 
   console.log(
     'usdtBalance: ',
@@ -85,13 +92,14 @@ async function submitUsdtPerpOrders(apiKey: string, apiSecret: string) {
   );
 
   // set mode to one-way (easier than hedge-mode, if you don't care for hedge mode)
-  const positionModeResult = await restClient.setPositionMode({
+  const positionModeResult = await restClient.switchPositionMode({
+    category: 'linear',
     symbol: TARGET_SYMBOL,
-    mode: 'MergedSingle',
+    mode: 0,
   });
 
   if (
-    positionModeResult.ret_code === API_ERROR_CODE.POSITION_MODE_NOT_MODIFIED
+    positionModeResult.retCode === API_ERROR_CODE.POSITION_MODE_NOT_MODIFIED
   ) {
     console.log('position mode was already correct: ', positionModeResult);
   } else {
@@ -99,17 +107,18 @@ async function submitUsdtPerpOrders(apiKey: string, apiSecret: string) {
   }
 
   // log current positions (and leverage per symbol)
-  const positionResult = await restClient.getPosition({
+  const positionResult = await restClient.getPositionInfo({
+    category: 'linear',
     symbol: TARGET_SYMBOL,
   });
 
   console.log(
     'positions: ',
-    positionResult.result.map((pos) => {
+    positionResult.result.list.map((pos) => {
       return {
         symbol: pos.symbol,
         leverage: pos.leverage,
-        mode: pos.mode,
+        mode: pos.tradeMode,
         size: pos.size,
         side: pos.side,
       };
@@ -117,15 +126,16 @@ async function submitUsdtPerpOrders(apiKey: string, apiSecret: string) {
   );
 
   // change leverage, only if needed
-  const leverageToChange = positionResult.result.filter(
-    (pos) => pos.leverage !== TARGET_LEVERAGE,
+  const leverageToChange = positionResult.result.list.filter(
+    (pos) => pos.leverage !== TARGET_LEVERAGE.toString(),
   );
 
   if (leverageToChange.length) {
-    const setLeverageResult = await restClient.setUserLeverage({
+    const setLeverageResult = await restClient.setLeverage({
       symbol: TARGET_SYMBOL,
-      buy_leverage: TARGET_LEVERAGE,
-      sell_leverage: TARGET_LEVERAGE,
+      buyLeverage: TARGET_LEVERAGE.toString(),
+      sellLeverage: TARGET_LEVERAGE.toString(),
+      category: 'linear',
     });
 
     console.log(
@@ -189,23 +199,24 @@ async function submitUsdtPerpOrders(apiKey: string, apiSecret: string) {
 }
 
 async function enterLongPosition(
-  restClient: LinearClient,
+  restClient: RestClientV5,
   symbol: string,
   quantity: number,
 ): Promise<boolean> {
   // Open a long position by making a long entry order (buying so the position qty is positive)
-  const entryOrderResult = await restClient.placeActiveOrder({
+  const entryOrderResult = await restClient.submitOrder({
+    category: 'linear',
     side: 'Buy',
     symbol: symbol,
-    order_type: 'Market',
-    qty: quantity,
-    time_in_force: 'GoodTillCancel',
-    reduce_only: false,
-    close_on_trigger: false,
-    position_idx: LinearPositionIdx.OneWayMode,
+    orderType: 'Market',
+    qty: quantity.toString(),
+    timeInForce: 'GTC',
+    reduceOnly: false,
+    closeOnTrigger: false,
+    positionIdx: 0,
   });
 
-  if (entryOrderResult.ret_msg !== 'OK') {
+  if (entryOrderResult.retMsg !== 'OK') {
     console.error(
       `ERROR making long entry order: `,
       JSON.stringify(entryOrderResult, null, 2),
@@ -219,23 +230,24 @@ async function enterLongPosition(
 
 // shorting is just making sure you have a negative position
 async function enterShortPosition(
-  restClient: LinearClient,
+  restClient: RestClientV5,
   symbol: string,
   quantity: number,
 ): Promise<boolean> {
   // Open a short position by making a long entry order (selling so the position qty is negative)
-  const entryOrderResult = await restClient.placeActiveOrder({
+  const entryOrderResult = await restClient.submitOrder({
+    category: 'linear',
     side: 'Sell',
     symbol: symbol,
-    order_type: 'Market',
-    qty: quantity,
-    time_in_force: 'GoodTillCancel',
-    reduce_only: false,
-    close_on_trigger: false,
-    position_idx: LinearPositionIdx.OneWayMode,
+    orderType: 'Market',
+    qty: quantity.toString(),
+    timeInForce: 'GTC',
+    reduceOnly: false,
+    closeOnTrigger: false,
+    positionIdx: 0,
   });
 
-  if (entryOrderResult.ret_msg !== 'OK') {
+  if (entryOrderResult.retMsg !== 'OK') {
     console.error(
       `ERROR making long entry order: `,
       JSON.stringify(entryOrderResult, null, 2),
@@ -248,14 +260,15 @@ async function enterShortPosition(
 }
 
 async function closeLongPosition(
-  restClient: LinearClient,
+  restClient: RestClientV5,
   symbol: string,
 ): Promise<boolean> {
-  const positionResult = await restClient.getPosition({
+  const positionResult = await restClient.getPositionInfo({
+    category: 'linear',
     symbol: symbol,
   });
 
-  const activePosition = positionResult.result.find(
+  const activePosition = positionResult.result.list.find(
     (pos) => pos.symbol === symbol,
   );
 
@@ -266,18 +279,19 @@ async function closeLongPosition(
   }
 
   // submit reduce only sell to close long position
-  const closePositionResult = await restClient.placeActiveOrder({
+  const closePositionResult = await restClient.submitOrder({
+    category: 'linear',
     side: 'Sell',
     symbol: symbol,
-    order_type: 'Market',
+    orderType: 'Market',
     qty: activePosition.size, // using position size from api response
-    time_in_force: 'GoodTillCancel',
-    reduce_only: true,
-    close_on_trigger: false,
-    position_idx: LinearPositionIdx.OneWayMode,
+    timeInForce: 'GTC',
+    reduceOnly: true,
+    closeOnTrigger: false,
+    positionIdx: 0,
   });
 
-  if (closePositionResult.ret_msg !== 'OK') {
+  if (closePositionResult.retMsg !== 'OK') {
     console.error(
       `error closing long position: `,
       JSON.stringify(closePositionResult, null, 2),
@@ -290,14 +304,15 @@ async function closeLongPosition(
 }
 
 async function closeShortPosition(
-  restClient: LinearClient,
+  restClient: RestClientV5,
   symbol: string,
 ): Promise<boolean> {
-  const positionResult = await restClient.getPosition({
+  const positionResult = await restClient.getPositionInfo({
+    category: 'linear',
     symbol: symbol,
   });
 
-  const activePosition = positionResult.result.find(
+  const activePosition = positionResult.result.list.find(
     (pos) => pos.symbol === symbol,
   );
 
@@ -308,18 +323,19 @@ async function closeShortPosition(
   }
 
   // submit reduce only buy to close short position
-  const closePositionResult = await restClient.placeActiveOrder({
+  const closePositionResult = await restClient.submitOrder({
+    category: 'linear',
     side: 'Buy',
     symbol: symbol,
-    order_type: 'Market',
+    orderType: 'Market',
     qty: activePosition.size, // using position size from api response
-    time_in_force: 'GoodTillCancel',
-    reduce_only: true,
-    close_on_trigger: false,
-    position_idx: LinearPositionIdx.OneWayMode,
+    timeInForce: 'GTC',
+    reduceOnly: true,
+    closeOnTrigger: false,
+    positionIdx: 0,
   });
 
-  if (closePositionResult.ret_msg !== 'OK') {
+  if (closePositionResult.retMsg !== 'OK') {
     console.error(
       `error closing short position: `,
       JSON.stringify(closePositionResult, null, 2),

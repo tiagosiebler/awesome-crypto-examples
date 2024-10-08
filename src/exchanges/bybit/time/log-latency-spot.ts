@@ -1,6 +1,6 @@
-import { SpotClient } from 'bybit-api';
+import { RestClientV5 } from 'bybit-api';
 
-const client = new SpotClient();
+const client = new RestClientV5();
 
 /**
  * Simple script to log latency estimates for making an API call to bybit's time endpoint
@@ -8,7 +8,10 @@ const client = new SpotClient();
 async function start() {
   const clientTimeReqStart = Date.now();
   const serverTime = await client.getServerTime();
+  console.log('serverTime: ', serverTime);
   const clientTimeReqEnd = Date.now();
+
+  const serverTimeMs = serverTime.time;
 
   console.log('time: ', {
     // Time the request was made
@@ -18,11 +21,11 @@ async function start() {
     // Estimate for how long it took to make an API call to the time endpoint and to get a reply
     clientTimeReqDiff: clientTimeReqEnd - clientTimeReqStart,
     // Time returned by the server
-    serverTime,
+    serverTimeMs,
     // Estimated latency from request start time to server reply
-    serverTimeStartDiff: serverTime - clientTimeReqStart,
+    serverTimeStartDiff: serverTimeMs - clientTimeReqStart,
     // Estimated latency from server reply to reply received
-    serverTimeEndDiff: clientTimeReqEnd - serverTime,
+    serverTimeEndDiff: clientTimeReqEnd - serverTimeMs,
   });
 
   process.exit(0);
