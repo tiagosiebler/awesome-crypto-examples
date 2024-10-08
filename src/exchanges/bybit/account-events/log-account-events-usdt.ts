@@ -16,12 +16,7 @@ const secret = process.env.APISECRET || 'YOURAPISECRETHERE';
 const wsClient = new WebsocketClient({
   key: key,
   secret: secret,
-  // USDT Perps
-  market: 'linear',
-  // Inverse Perps
-  // market: 'inverse',
-  // Spot
-  // market: 'spotv3',
+  market: 'v5',
   testnet: false,
 });
 
@@ -41,6 +36,15 @@ wsClient.on('reconnect', ({ wsKey }) => {
 wsClient.on('reconnected', (data) => {
   console.log('ws has reconnected ', data?.wsKey);
 });
+wsClient.on('error', (error) => {
+  console.error('ws error: ', error);
+});
 
-// subscribe to private endpoints
-wsClient.subscribe(['position', 'execution', 'order', 'wallet']);
+// (v5) subscribe to multiple topics at once
+wsClient.subscribeV5(
+  ['orderbook.50.BTCUSDT', 'orderbook.50.ETHUSDT'],
+  'linear',
+);
+
+// (v5) and/or subscribe to individual topics on demand
+wsClient.subscribeV5('position', 'linear');
