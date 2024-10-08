@@ -1,6 +1,6 @@
-import { RestClientV5 } from 'bybit-api';
+import { USDMClient } from 'binance';
 
-const client = new RestClientV5();
+const client = new USDMClient();
 
 /**
  * Script to synchronize local time with Bybit's server time and log latency estimates
@@ -10,7 +10,7 @@ async function start() {
   const serverTime = await client.getServerTime();
   const clientTimeReqEnd = Date.now();
 
-  const serverTimeMs = serverTime.time;
+  const serverTimeMs = serverTime;
   const roundTripTime = clientTimeReqEnd - clientTimeReqStart;
   const estimatedOneWayLatency = Math.floor(roundTripTime / 2);
 
