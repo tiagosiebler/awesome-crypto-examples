@@ -3,7 +3,7 @@ import { USDMClient } from 'binance';
 const client = new USDMClient();
 
 /**
- * Script to synchronize local time with Bybit's server time and log latency estimates
+ * Script to check if local time is synced with exchange's server time and log latency estimates 
  */
 async function start() {
   const clientTimeReqStart = Date.now();

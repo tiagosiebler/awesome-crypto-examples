@@ -36,6 +36,9 @@ wsClient.on('reconnect', ({ wsKey }) => {
 wsClient.on('reconnected', (data) => {
   console.log('ws has reconnected ', data?.wsKey);
 });
+wsClient.on('error', (error) => {
+  console.error('ws error: ', error);
+});
 
 // (v5) subscribe to multiple topics at once
 wsClient.subscribeV5(
@@ -45,4 +48,3 @@ wsClient.subscribeV5(
 
 // (v5) and/or subscribe to individual topics on demand
 wsClient.subscribeV5('position', 'linear');
-wsClient.subscribeV5('publicTrade.BTC', 'option');
