@@ -1,8 +1,6 @@
 import {
   API_ERROR_CODE,
   APIMarket,
-  LinearClient,
-  LinearPositionIdx,
   RestClientV5,
   WebsocketClient,
 } from 'bybit-api';
@@ -17,8 +15,8 @@ const secret = "APISECRETHERE";
 
 the below code reads it from env vars first. If none are provided, it defaults to the hardcoded strings:
 **/
-const apiKey = process.env.API_KEY_COM || 'yourAPIKeyHere';
-const apiSecret = process.env.API_SECRET_COM || 'yourAPISecretHere';
+const apiKey = process.env.API_KEY_COM || 'your_api_key_here';
+const apiSecret = process.env.API_SECRET_COM || 'your_api_secret_here';
 const testnet = false;
 
 /**
@@ -66,136 +64,143 @@ function connectAndListenToAccountWebsocketEvents(
 }
 
 async function submitUsdtPerpOrders(apiKey: string, apiSecret: string) {
-  const restClient = new RestClientV5({
-    key: apiKey,
-    secret: apiSecret,
-    testnet: testnet,
-  });
+  try {
+    const restClient = new RestClientV5({
+      key: apiKey,
+      secret: apiSecret,
+      testnet: testnet,
+    });
 
-  const TARGET_LEVERAGE = 5;
-  const TARGET_SYMBOL = 'BTCUSDT';
-  const BTC_AMOUNT_TO_TRADE = 0.001;
+    const TARGET_LEVERAGE = 5;
+    const TARGET_SYMBOL = 'BTCUSDT';
+    const BTC_AMOUNT_TO_TRADE = 0.001;
 
-  const walletBalanceResponse = await restClient.getWalletBalance({
-    accountType: 'UNIFIED',
-  });
-  const USDTBalanceObject = walletBalanceResponse.result.list[0].coin.find(
-    (coinBalance) => coinBalance.coin === 'USDT',
-  );
+    const walletBalanceResponse = await restClient.getWalletBalance({
+      accountType: 'UNIFIED',
+    });
+    const USDTBalanceObject = walletBalanceResponse.result.list[0].coin.find(
+      (coinBalance) => coinBalance.coin === 'USDT',
+    );
 
-  const usdtBalance = USDTBalanceObject.walletBalance;
+    const usdtBalance = USDTBalanceObject.walletBalance;
 
-  console.log(
-    'usdtBalance: ',
-    usdtBalance,
-    // JSON.stringify(walletBalanceResponse, null, 2),
-  );
+    console.log(
+      'usdtBalance: ',
+      usdtBalance,
+      // JSON.stringify(walletBalanceResponse, null, 2),
+    );
 
-  // set mode to one-way (easier than hedge-mode, if you don't care for hedge mode)
-  const positionModeResult = await restClient.switchPositionMode({
-    category: 'linear',
-    symbol: TARGET_SYMBOL,
-    mode: 0,
-  });
-
-  if (
-    positionModeResult.retCode === API_ERROR_CODE.POSITION_MODE_NOT_MODIFIED
-  ) {
-    console.log('position mode was already correct: ', positionModeResult);
-  } else {
-    console.log('position mode change result: ', positionModeResult);
-  }
-
-  // log current positions (and leverage per symbol)
-  const positionResult = await restClient.getPositionInfo({
-    category: 'linear',
-    symbol: TARGET_SYMBOL,
-  });
-
-  console.log(
-    'positions: ',
-    positionResult.result.list.map((pos) => {
-      return {
-        symbol: pos.symbol,
-        leverage: pos.leverage,
-        mode: pos.tradeMode,
-        size: pos.size,
-        side: pos.side,
-      };
-    }),
-  );
-
-  // change leverage, only if needed
-  const leverageToChange = positionResult.result.list.filter(
-    (pos) => pos.leverage !== TARGET_LEVERAGE.toString(),
-  );
-
-  if (leverageToChange.length) {
-    const setLeverageResult = await restClient.setLeverage({
-      symbol: TARGET_SYMBOL,
-      buyLeverage: TARGET_LEVERAGE.toString(),
-      sellLeverage: TARGET_LEVERAGE.toString(),
+    // set mode to one-way (easier than hedge-mode, if you don't care for hedge mode)
+    const positionModeResult = await restClient.switchPositionMode({
       category: 'linear',
+      symbol: TARGET_SYMBOL,
+      mode: 0,
+    });
+
+    if (
+      positionModeResult.retCode === API_ERROR_CODE.POSITION_MODE_NOT_MODIFIED
+    ) {
+      console.log('position mode was already correct: ', positionModeResult);
+    } else {
+      console.log('position mode change result: ', positionModeResult);
+    }
+
+    // log current positions (and leverage per symbol)
+    const positionResult = await restClient.getPositionInfo({
+      category: 'linear',
+      symbol: TARGET_SYMBOL,
     });
 
     console.log(
-      'setLeverageResult: ',
-      JSON.stringify(setLeverageResult, null, 2),
+      'positions: ',
+      positionResult.result.list.map((pos) => {
+        return {
+          symbol: pos.symbol,
+          leverage: pos.leverage,
+          mode: pos.tradeMode,
+          size: pos.size,
+          side: pos.side,
+        };
+      }),
     );
-  } else {
-    console.log('no leverage change needed');
+
+    // change leverage, only if needed
+    const leverageToChange = positionResult.result.list.filter(
+      (pos) => pos.leverage !== TARGET_LEVERAGE.toString(),
+    );
+
+    if (leverageToChange.length) {
+      const setLeverageResult = await restClient.setLeverage({
+        symbol: TARGET_SYMBOL,
+        buyLeverage: TARGET_LEVERAGE.toString(),
+        sellLeverage: TARGET_LEVERAGE.toString(),
+        category: 'linear',
+      });
+
+      console.log(
+        'setLeverageResult: ',
+        JSON.stringify(setLeverageResult, null, 2),
+      );
+    } else {
+      console.log('no leverage change needed');
+    }
+
+    console.log('entering long position: ');
+    const successEntryLong = await enterLongPosition(
+      restClient,
+      TARGET_SYMBOL,
+      BTC_AMOUNT_TO_TRADE,
+    );
+    if (!successEntryLong) {
+      // dont continue on fail
+      return;
+    }
+
+    const sleepSecondsBetweenOrder = 1;
+    await new Promise((resolve) =>
+      setTimeout(resolve, sleepSecondsBetweenOrder * 1000),
+    );
+
+    console.log('closing long position: ');
+    const successExitLong = await closeLongPosition(restClient, TARGET_SYMBOL);
+    if (!successExitLong) {
+      // dont continue on fail
+      return;
+    }
+
+    await new Promise((resolve) =>
+      setTimeout(resolve, sleepSecondsBetweenOrder * 1000),
+    );
+
+    console.log('entering short position: ');
+    const successEntryShort = await enterShortPosition(
+      restClient,
+      TARGET_SYMBOL,
+      BTC_AMOUNT_TO_TRADE,
+    );
+    if (!successEntryShort) {
+      // dont continue on fail
+      return;
+    }
+
+    await new Promise((resolve) =>
+      setTimeout(resolve, sleepSecondsBetweenOrder * 1000),
+    );
+
+    console.log('closing short position: ');
+    const successExitShort = await closeShortPosition(
+      restClient,
+      TARGET_SYMBOL,
+    );
+    if (!successExitShort) {
+      // dont continue on fail
+      return;
+    }
+
+    console.log('reached end - hit ctrl + C to kill the process');
+  } catch (error) {
+    console.error('Error submitting USDT perp orders:', error);
   }
-
-  console.log('entering long position: ');
-  const successEntryLong = await enterLongPosition(
-    restClient,
-    TARGET_SYMBOL,
-    BTC_AMOUNT_TO_TRADE,
-  );
-  if (!successEntryLong) {
-    // dont continue on fail
-    return;
-  }
-
-  const sleepSecondsBetweenOrder = 1;
-  await new Promise((resolve) =>
-    setTimeout(resolve, sleepSecondsBetweenOrder * 1000),
-  );
-
-  console.log('closing long position: ');
-  const successExitLong = await closeLongPosition(restClient, TARGET_SYMBOL);
-  if (!successExitLong) {
-    // dont continue on fail
-    return;
-  }
-
-  await new Promise((resolve) =>
-    setTimeout(resolve, sleepSecondsBetweenOrder * 1000),
-  );
-
-  console.log('entering short position: ');
-  const successEntryShort = await enterShortPosition(
-    restClient,
-    TARGET_SYMBOL,
-    BTC_AMOUNT_TO_TRADE,
-  );
-  if (!successEntryShort) {
-    // dont continue on fail
-    return;
-  }
-
-  await new Promise((resolve) =>
-    setTimeout(resolve, sleepSecondsBetweenOrder * 1000),
-  );
-
-  console.log('closing short position: ');
-  const successExitShort = await closeShortPosition(restClient, TARGET_SYMBOL);
-  if (!successExitShort) {
-    // dont continue on fail
-    return;
-  }
-
-  console.log('reached end - hit ctrl + C to kill the process');
 }
 
 async function enterLongPosition(
