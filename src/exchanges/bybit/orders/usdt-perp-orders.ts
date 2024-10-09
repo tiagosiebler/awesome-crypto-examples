@@ -77,7 +77,7 @@ async function submitUsdtPerpOrders(apiKey: string, apiSecret: string) {
   const BTC_AMOUNT_TO_TRADE = 0.001;
 
   const walletBalanceResponse = await restClient.getWalletBalance({
-    accountType: 'CONTRACT',
+    accountType: 'UNIFIED',
   });
   const USDTBalanceObject = walletBalanceResponse.result.list[0].coin.find(
     (coinBalance) => coinBalance.coin === 'USDT',
