@@ -13,7 +13,6 @@
     "binance": "^2.9.4",
     "bitget-api": "^2.0.4",
     "bybit-api": "^3.9.0",
-    "ftx-api": "^1.1.14",
     "okx-api": "^1.0.3",
     "orderbooks": "^1.1.3"
   },
