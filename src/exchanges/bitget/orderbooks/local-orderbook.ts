@@ -1,5 +1,5 @@
-import { DefaultLogger, WebsocketClient } from 'bitget-api';
-import { OrderBookLevel, OrderBooksStore } from 'orderbooks';
+import { WebsocketClient } from 'bitget-api';
+import { OrderBooksStore } from 'orderbooks';
 
 const OrderBooks = new OrderBooksStore({
   traceLog: true,
