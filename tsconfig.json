@@ -19,6 +19,6 @@
     "lib": ["es2020", "DOM"],
     "baseUrl": "src"
   },
-  "exclude": ["**/node_modules/*", "coverage", "bin", "docs", "test"],
+  "exclude": ["**/node_modules/*", "coverage", "bin", "docs", "test", "src/demos/react-bybit"],
   "include": ["src/**/*"]
 }
