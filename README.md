@@ -1,6 +1,6 @@
 # Awesome crypto examples
 
-[![Build & Test](https://github.com/tiagosiebler/awesome-crypto-examples/actions/workflows/test.yml/badge.svg)](https://github.com/tiagosiebler/awesome-crypto-examples/actions/workflows/test.yml)
+[![Build & Test](https://github.com/tiagosiebler/awesome-crypto-examples/actions/workflows/build.yml/badge.svg)](https://github.com/tiagosiebler/awesome-crypto-examples/actions/workflows/test.yml)
 [![last commit](https://img.shields.io/github/last-commit/tiagosiebler/awesome-crypto-examples)](https://github.com/tiagosiebler/awesome-crypto-examples)
 [![Telegram](https://img.shields.io/badge/chat-on%20telegram-blue.svg)](https://t.me/nodetraders)
 
