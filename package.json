@@ -1,6 +1,6 @@
 {
   "name": "awesome-crypto-examples",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "description": "Awesome crypto automation & algo trading examples",
   "main": "index.js",
