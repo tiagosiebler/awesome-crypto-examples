@@ -1,4 +1,4 @@
-import { DefaultLogger, WebsocketClient } from 'bybit-api';
+import { WebsocketClient } from 'bybit-api';
 import {
   OrderBookLevel,
   OrderBookLevelState,
@@ -45,6 +45,7 @@ function handleOrderbookUpdate(message: WsMessage) {
   const { topic, type, ts, data } = message;
   const [topicKey, depth, symbol] = topic.split('.');
 
+
   // Use the new function for both bid and ask levels
   const levelsMapBid = mapOrderBookLevels(symbol, data.b, 'Buy');
   const levelsMapAsk = mapOrderBookLevels(symbol, data.a, 'Sell');
@@ -52,10 +53,10 @@ function handleOrderbookUpdate(message: WsMessage) {
   //merge bid and ask levels into a single array
   const levels = [...levelsMapBid, ...levelsMapAsk];
 
-  if (type === 'snapshot') {
+  if (type === 'snapshot' ) {
     return OrderBooks.handleSnapshot(
       symbol,
-      levels,
+      levels as any,
       // message,
     ).print();
   }

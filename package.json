@@ -1,12 +1,14 @@
 {
   "name": "awesome-crypto-examples",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Awesome crypto automation & algo trading examples",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint -c .eslintrc.json"
+    "lint": "eslint -c .eslintrc.json",
+    "build": "tsc"
+    
   },
   "dependencies": {
     "accountstate": "^0.0.19",
