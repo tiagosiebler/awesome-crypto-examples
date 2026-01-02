@@ -76,7 +76,7 @@ ACCOUNTS.forEach((account) => {
 });
 
 /** Log balance updates when account changes happen */
-async function onAccountUpdate(
+ function onAccountUpdate(
   data: WsMessageFuturesUserDataAccountUpdateFormatted,
   accountLabel: AccountLabel,
 ) {

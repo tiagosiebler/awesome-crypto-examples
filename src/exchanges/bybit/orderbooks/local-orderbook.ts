@@ -56,7 +56,7 @@ function handleOrderbookUpdate(message: WsMessage) {
   if (type === 'snapshot' ) {
     return OrderBooks.handleSnapshot(
       symbol,
-      levels as any,
+      levels as Parameters<typeof OrderBooks.handleSnapshot>[1],
       // message,
     ).print();
   }
