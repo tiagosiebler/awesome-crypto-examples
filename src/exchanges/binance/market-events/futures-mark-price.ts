@@ -40,7 +40,7 @@ wsClient.on('formattedMessage', (data) => {
 
 // monitor life cycle events related to websockets
 wsClient.on('open', (data) => {
-  console.log('connection opened open:', data.wsKey, data.ws.target.url);
+  console.log('connection opened open:', data.wsKey, data?.ws?.target?.url);
 });
 wsClient.on('reconnecting', (data) => {
   console.log('ws automatically reconnecting.... ', data?.wsKey);

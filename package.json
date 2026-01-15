@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint -c .eslintrc.json",
+    "lint": "eslint -c .eslintrc.js",
     "build": "tsc"
     
   },
